@@ -1,0 +1,34 @@
+{
+  "name": "my-tina-hugo-app",
+  "version": "0.0.1",
+  "description": "A starter for TinaCMS with Hugo",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tinacms dev -c \"hugo server -D\"",
+    "build": "tinacms build && hugo",
+    "build-local": "tinacms build --local --skip-indexing --skip-cloud-checks && hugo",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tinalabs/vanilla-hugo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tinalabs/vanilla-hugo/issues"
+  },
+  "homepage": "https://github.com/tinalabs/vanilla-hugo#readme",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@tinacms/auth": "^1.1.0",
+    "@tinacms/cli": "^2.0.1",
+    "next-tinacms-cloudinary": "^17.0.1",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "tinacms": "^3.0.1"
+  }
+}
