@@ -1,4 +1,4 @@
-baseURL = 'http://example.org/'
+baseURL = 'https://legacy-script.github.io/'
 title = 'Legacy Script'
 theme = "ananke"
 
