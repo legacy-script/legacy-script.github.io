@@ -1,5 +1,44 @@
-node_modules
-.env
-public
+# --- Hugo ---
+# Игнорируем папку со сгенерированным сайтом (она создается при каждой сборке)
+public/
+# Игнорируем временные ресурсы и кеш
+resources/_gen/*
+.hugo_build.lock
+hugo_stats.json
 
-*-lock.*
+# --- Node / TinaCMS ---
+# Огромная папка с библиотеками (её восстановит команда npm install)
+node_modules/
+# Логи ошибок npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# --- TinaCMS Generated Files ---
+# Эти файлы генерируются автоматически из твоего tina/config.ts
+.tina/__generated__/
+tina/__generated__/
+# Если используешь локальную базу данных Тины
+.tina/local/
+
+# --- OS / IDE ---
+# Мусор от macOS
+.DS_Store
+# Настройки VS Code или JetBrains (Pycharm)
+.vscode/
+.idea/
+*.swp
+*.bak
+
+# --- Env / Secrets ---
+# Файлы с ключами доступа и токенами (НИКОГДА не пушь их в открытый доступ!)
+.env
+.env.local
+
+
+# Игнорируем служебные файлы внутри папок тем
+themes/**/pnpm-lock.yaml
+themes/**/package-lock.json
+themes/**/node_modules/
+

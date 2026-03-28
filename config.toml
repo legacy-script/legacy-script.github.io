@@ -1,4 +1,31 @@
 baseURL = 'http://example.org/'
-languageCode = 'en-us'
-title = 'My New Hugo Site'
+title = 'Legacy Script'
 theme = "ananke"
+
+# Язык по умолчанию (если зайти просто на домен)
+defaultContentLanguage = 'en'
+# Важно: Hugo не будет добавлять /ru/ в URL для русского, 
+# но добавит /en/ для английского. Это стандарт де-факто.
+defaultContentLanguageInSubdir = false
+
+[languages]
+  [languages.ru]
+    languageCode = 'ru-ru'
+    languageName = 'Русский'
+    contentDir = 'content/ru' # Твоя папка с русскими постами
+    weight = 1                # Порядок в меню (первый)
+    title = 'Legacy Script // Блог'
+  [languages.ru.params]
+    # Это подскажет теме, какую секцию считать главной и как её называть
+    mainSections = ["posts"]
+    languageLinkText = 'Русская версия'
+
+  [languages.en]
+    languageCode = 'en-us'
+    languageName = 'English'
+    contentDir = 'content/en' # Твоя папка с английскими постами
+    weight = 2                # Порядок в меню (второй)
+    title = 'Legacy Script // Blog'
+  [languages.en.params]
+    languageLinkText = 'English version'
+

@@ -19,6 +19,19 @@ export default defineConfig({
     },
   },
   schema: {
-    collections: [Post],
+    collections: [
+      {
+        ...Post,
+        name: "post_ru",
+        label: "Посты (RU)",
+        path: "content/ru/posts", // Путь к русским постам
+      },
+      {
+        ...Post,
+        name: "post",
+        label: "Posts (EN)",
+        path: "content/en/posts", // Путь к английским постам
+      },
+    ],
   },
 });
