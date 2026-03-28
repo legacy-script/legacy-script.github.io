@@ -1,6 +1,7 @@
 baseURL = 'https://legacy-script.github.io/'
 title = 'Legacy Script'
 theme = "ananke"
+favicon = "favicon.ico"
 
 # Язык по умолчанию (если зайти просто на домен)
 defaultContentLanguage = 'en'
