@@ -7,11 +7,11 @@ draft: false
 
 При разработке веб-приложения часто возникает задача: нужно реализовать базовые операции (CRUD — create, read, update, delete) для одной или нескольких моделей.
 
-В Django для этого есть элегантный инструмент — [generic class-based views](https://docs.djangoproject.com/en/6.0/topics/class-based-views/generic-display/). С их помощью можно создать представление (view), написав всего несколько строк кода.
+В Django для этого есть элегантный инструмент — [generic class-based views](https://docs.djangoproject.com/en/6.0/topics/class-based-views/generic-display/). С их помощью можно реализовать представление (view), написав всего несколько строк кода.
 
-Сложности возникают, когда несколько представлений ссылаются друг на друга. Например, зачастую каждый элемент в списке (list view) является ссылкой на страницу деталей (detail view), которая, в свою очередь, содержит ссылки для перехода к редактированию (update view) или возврата к списку. Представление удаления (delete view) после выполнения операции обычно перенаправляет пользователя обратно к списку, и так далее. Реализация всех этих связей для каждой модели — процесс весьма утомительный.
+Сложности возникают, когда представления ссылаются друг на друга. Например, зачастую каждый элемент в списке (list view) является ссылкой на страницу деталей (detail view), которая, в свою очередь, содержит кнопки для перехода к редактированию (update view) или возврата к списку. Представление удаления (delete view) после выполнения операции обычно перенаправляет пользователя обратно к списку, и так далее. Реализация всех этих связей для каждой модели — процесс весьма утомительный.
 
-В Django Rest Framework для упрощения создания связанных представлений введен класс [Viewset](https://www.django-rest-framework.org/api-guide/viewsets/). В этой статье я покажу, как можно реализовать похожую идею, но не для REST-приложения, а для проекта, построенного по классической схеме model-view-template.
+В Django Rest Framework для упрощения создания связанных представлений был введён класс [ViewSet](https://www.django-rest-framework.org/api-guide/viewsets/). В этой статье я покажу, как реализовать аналогичную идею не для REST-приложения, а для проекта, построенного по классической архитектуре Model-View-Template (MVT).
 
 ### Что мы будем делать
 
@@ -43,7 +43,7 @@ class Employee(models.Model):
 * [django-tables2](https://django-tables2.readthedocs.io/en/latest/) — с его помощью отрисовывается таблица в списке,
 * [django-filter](https://django-filter.readthedocs.io/en/stable/) — для создания фильтров в таблице,
 * [django-crispy-forms](https://django-crispy-forms.readthedocs.io/en/latest/) и [crispy-bootstrap5](https://pypi.org/project/crispy-bootstrap5/) нужны для форм редактирования (приложение использует Bootstrap 5),
-* [django-select2](https://django-select2.readthedocs.io/en/stable/) необходим для выпадающих списков в полях-ссылках на другие модели.
+* [django-select2](https://django-select2.readthedocs.io/en/stable/) необходим для выпадающих списков в полях, ссылающихся на другие модели.
 
 Полную реализацию можно посмотреть на [GitHub](https://github.com/dpdevotee/dry-cruds/tree/master).
 
@@ -55,12 +55,12 @@ class Employee(models.Model):
 
 Конструктор этого класса принимает следующие аргументы:
 
-* `model` — модель, для которой создается CRUD;
+* `model` — модель, для которой создаётся CRUD;
 * `table_class` — класс таблицы для списка (используется [django-tables2](https://django-tables2.readthedocs.io/en/latest/));
 * `filterset_class` — класс фильтров для таблицы (используется [django-filter](https://django-filter.readthedocs.io/en/stable/));
 * `form_class` — класс формы для редактирования экземпляра модели;
-* `base_url_pattern` — строка-префикс для всех эндпоинтов в CRUD (эндпоинты имеют вид `{base_url_pattern}/`, `{base_url_pattern}/create/`, `{base_url_pattern}/<id>/detail/`, `{base_url_pattern}/<id>/update`, `{base_url_pattern}/<id>/delete`);
-* `base_url_name` — строка-префикс для всех имен эндпоинтов в CRUD (имена используются внутри шаблонов).
+* `base_url_pattern` — строка-префикс для всех эндпоинтов в CRUD (эндпоинты имеют вид `{base_url_pattern}/`, `{base_url_pattern}/create/`, `{base_url_pattern}/<id>/detail/`, `{base_url_pattern}/<id>/update/`, `{base_url_pattern}/<id>/delete/`);
+* `base_url_name` — строка-префикс для всех имён эндпоинтов в CRUD (имена используются внутри шаблонов).
 
 Пример использования:
 
@@ -128,7 +128,7 @@ urlpatterns = [
 ]
 ```
 
-Класс `TableViewSet` динамически создает представление для каждой операции. Вот, например, [как создается list view](https://github.com/dpdevotee/dry-cruds/blob/master/common/viewset.py#L54):
+Класс `TableViewSet` динамически создаёт представление для каждой операции. Вот пример того, [как создаётся list view](https://github.com/dpdevotee/dry-cruds/blob/master/common/viewset.py#L54):
 
 ```python
     def _build_list_url(self):
@@ -201,9 +201,9 @@ urlpatterns = [
 {% endblock %}
 ```
 
-Также стоит обратить внимание на то, что первая колонка в таблице — это колонка со ссылками на detail views для каждой строки. Это реализовано с помощью класса `TableWithLinks`: он наследуется от исходного класса таблицы и добавляет новую колонку `pk`, которая благодаря параметру `linkify=(self.detail_url_name, (A("pk"),))` становится кликабельной.
+Также стоит обратить внимание на то, что первая колонка в таблице — это колонка со ссылками на detail view для каждой строки. Это реализовано с помощью класса `TableWithLinks`: он наследуется от исходного класса таблицы и добавляет новую колонку `pk`, которая благодаря параметру `linkify=(self.detail_url_name, (A("pk"),))` становится кликабельной.
 
-[Метод](https://github.com/dpdevotee/dry-cruds/blob/master/common/viewset.py#L183) `urls` класса `TableViewSet` просто последовательно создает URL для каждой операции и возвращает их список:
+[Метод](https://github.com/dpdevotee/dry-cruds/blob/master/common/viewset.py#L183) `urls` класса `TableViewSet` просто последовательно создаёт URL для каждой операции и возвращает их список:
 
 ```python
     @property
@@ -217,7 +217,7 @@ urlpatterns = [
         ]
 ```
 
-И последнее: для того чтобы поля выбора `job`, `department` и `manager` сотрудника были выпадающими списками, необходимо [добавить](https://github.com/dpdevotee/dry-cruds/blob/master/dry_cruds/urls.py#L23) в `urlpatterns` поддержку `select2`:
+И последнее. Для того чтобы поля выбора `job`, `department` и `manager` сотрудника стали выпадающими списками, необходимо [добавить](https://github.com/dpdevotee/dry-cruds/blob/master/dry_cruds/urls.py#L23) в `urlpatterns` поддержку `select2`:
 
 ```python
 from django.contrib import admin
@@ -232,7 +232,7 @@ urlpatterns = [
 ]
 ```
 
-и [определить виджеты](https://github.com/dpdevotee/dry-cruds/blob/master/hr/forms.py) для этих полей в формах:
+Также необходимо [определить виджеты](https://github.com/dpdevotee/dry-cruds/blob/master/hr/forms.py) для этих полей в формах:
 
 ```python
 from django import forms
@@ -271,8 +271,8 @@ class EmployeeForm(forms.ModelForm):
         }
 ```
 
-Теперь, когда мы знаем, как реализовать CRUD для модели `Employee`, легко сделать то же самое и для других моделей приложения. При этом нам не придется писать новые шаблоны и беспокоиться о связях между представлениями — всё, что нужно сделать, это определить таблицу, фильтры и форму.
+Теперь, когда мы знаем, как реализовать CRUD для модели `Employee`, легко сделать то же самое и для других моделей приложения. При этом нам не придётся писать новые шаблоны и беспокоиться о связях между представлениями — всё, что нужно сделать, это определить таблицу, фильтры и форму.
 
 ### Заключение
 
-Итак, мы разобрали, как создавать CRUD в Django, придерживаясь принципа DRY. Мы не касались контроля доступа, но этой теме стоит посвятить отдельную статью.
+Итак, мы разобрали, как реализовывать CRUD в Django, придерживаясь принципа DRY. Мы не затрагивали тему контроля доступа, но ей стоит посвятить отдельную статью.
