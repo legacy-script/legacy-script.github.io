@@ -3,7 +3,7 @@ title = 'Legacy Script'
 theme = "ananke"
 
 [params]
-  favicon = "favicon.ico"
+  favicon = "favicon.png"
 
 # Язык по умолчанию (если зайти просто на домен)
 defaultContentLanguage = 'en'
